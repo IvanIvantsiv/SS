@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Ivantsiv_SSS</title>
+
+    <meta name="description" content="Freebie 44 - Marketing Web App (Tailwind). Check out more at https://pixelcave.com">
+    <meta name="author" content="pixelcave">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Icons -->
+
+
+    <!-- TailwindCSS -->
+    <link href="https://unpkg.com/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      html {
+        font-family: 'Inter';
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Page Container -->
+    <div id="page-container" class="flex flex-col mx-auto w-full min-h-screen bg-gray-100">
+      <!-- Page Content -->
+      <main id="page-content" class="flex flex-auto flex-col max-w-full">
+        <!-- Hero -->
+        <div class="bg-gray-800">
+          <!-- Header -->
+          <header id="page-header" class="flex flex-none items-center py-10">
+            <div class="flex flex-col text-center sm:flex-row sm:items-center sm:justify-between space-y-6 sm:space-y-0 container xl:max-w-6xl mx-auto px-4 lg:px-8">
+              <div>
+                <a href="https://instagram.com/vanya3426?igshid=OGQ5ZDc2ODk2ZA%3D%3D&utm_source=qr" class="inline-flex items-center space-x-2 font-bold text-lg tracking-wide text-white hover:opacity-75">
+                  <svg class="hi-outline hi-link inline-block w-5 h-5 opacity-50" stroke="currentColor" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                  <span>Explore</span>
+                </a>
+              </div>
+            </div>
+          </header>
+          <!-- END Header -->
+
+          <!-- Hero Content -->
+          <div class="container xl:max-w-6xl mx-auto px-4 pt-16 lg:px-8 lg:pt-32">
+            <div class="text-center">
+              <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-white">
+                Project made by Ivantsiv Ivan
+              </h2>
+              <h3 class="text-lg md:text-xl md:leading-relaxed font-medium text-gray-400 lg:w-2/3 mx-auto">
+                Google Teachable Machine
+              </h3>
+            </div>
+            <br>
+            <div style="font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; font-size:  large;  color: aquamarine;">Teachable Machine Image Model</div>
+<button type="button" onclick="init()" style="font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; font-size:  large;color: aquamarine;">Start</button>
+<div id="webcam-container" style="color: aquamarine;"></div>
+<div id="label-container" style="color: aquamarine;"></div>
+          </div>
+        </div>
+          </div>
+        </div>
+
+        <footer id="page-footer" class="bg-white">
+          <div class="flex flex-col md:flex-row md:justify-between space-y-6 md:space-y-0 text-center md:text-left text-sm container xl:max-w-6xl mx-auto px-4 py-16 lg:px-8 lg:py-32">
+            <nav class="space-x-2 sm:space-x-4">
+              <a href="javascript:void(0)" class="font-medium text-gray-700 hover:text-blue-500">
+                About
+              </a>
+              <a href="javascript:void(0)" class="font-medium text-gray-700 hover:text-blue-500">
+                Terms of Service
+              </a>
+              <a href="javascript:void(0)" class="font-medium text-gray-700 hover:text-blue-500">
+                Privacy Policy
+              </a>
+            </nav>
+            <div class="text-gray-500">
+              <span class="font-medium">Ivantsiv</span> © 2023
+            </div>
+          </div>
+        </footer>
+
+      </main>
+
+    </div>
+
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+<script type="text/javascript">
+    // More API functions here:
+    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+
+    // the link to your model provided by Teachable Machine export panel
+    const URL = "https://teachablemachine.withgoogle.com/models/N0hzeNPY9/";
+
+    let model, webcam, labelContainer, maxPredictions;
+
+    // Load the image model and setup the webcam
+    async function init() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        // load the model and metadata
+        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+        // or files from your local hard drive
+        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        // Convenience function to setup a webcam
+        const flip = true; // whether to flip the webcam
+        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+        await webcam.setup(); // request access to the webcam
+        await webcam.play();
+        window.requestAnimationFrame(loop);
+
+        // append elements to the DOM
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
+        }
+    }
+
+    async function loop() {
+        webcam.update(); // update the webcam frame
+        await predict();
+        window.requestAnimationFrame(loop);
+    }
+
+    // run the webcam image through the image model
+    async function predict() {
+        // predict can take in an image, video or canvas html element
+        const prediction = await model.predict(webcam.canvas);
+        for (let i = 0; i < maxPredictions; i++) {
+            const classPrediction =
+                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            labelContainer.childNodes[i].innerHTML = classPrediction;
+        }
+    }
+</script>
+</html>
